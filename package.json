@@ -11,5 +11,13 @@
     "url": "git+https://github.com/Proto-Garage/OneWalletNodeJSClient.git"
   },
   "license": "ISC",
-  "homepage": "https://github.com/Proto-Garage/OneWalletNodeJSClient#readme"
+  "homepage": "https://github.com/Proto-Garage/OneWalletNodeJSClient#readme",
+  "devDependencies": {
+    "cz-conventional-changelog": "^1.1.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
