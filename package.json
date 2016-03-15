@@ -21,6 +21,25 @@
     }
   },
   "dependencies": {
-    "babel-cli": "^6.6.5"
+    "babel-cli": "^6.6.5",
+    "bluebird": "^3.3.4",
+    "debug": "^2.2.0",
+    "lodash": "^4.6.1",
+    "request": "^2.69.0"
+  },
+  "jshintConfig": {
+    "node": true,
+    "undef": true,
+    "unused": true,
+    "esnext": true,
+    "sub": true,
+    "validthis": true,
+    "noyield": true,
+    "globals": {
+      "describe": true,
+      "it": true,
+      "before": true,
+      "after": true
+    }
   }
 }
