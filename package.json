@@ -6,7 +6,9 @@
   "scripts": {
     "build": "babel src --out-dir dist",
     "build-test": "babel test --out-dir test-build",
-    "test": "npm run-script build && npm run-script build-test && mocha -b test-build"
+    "jshint": "jshint src/ test/",
+    "jscs": "jscs src/ test/",
+    "test": "npm run-script build && npm run-script build-test && npm run-script jshint && npm run-script jscs && mocha -b test-build"
   },
   "repository": {
     "type": "git",
@@ -17,6 +19,8 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "cz-conventional-changelog": "^1.1.5",
+    "jscs": "^2.11.0",
+    "jshint": "^2.9.1",
     "mocha": "^2.4.5"
   },
   "config": {
@@ -46,6 +50,7 @@
     "sub": true,
     "validthis": true,
     "noyield": true,
+    "strict": true,
     "globals": {
       "describe": true,
       "it": true,
