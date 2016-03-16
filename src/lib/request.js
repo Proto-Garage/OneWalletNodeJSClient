@@ -1,11 +1,11 @@
 'use strict';
 
-import request      from 'request';
-import debug        from 'debug';
-import Promise      from 'bluebird';
-import { APIError } from './error';
-import _            from 'lodash';
-import crypto       from 'crypto';
+import request       from 'request';
+import debug         from 'debug';
+import Promise       from 'bluebird';
+import { APIError }  from './error';
+import { hash, hmac} from './utilities';
+import _             from 'lodash';
 
 const logger = debug( 'onewallet-client:request' );
 
@@ -104,16 +104,13 @@ export class Request {
         path = self.options.path;
 
       // Calculate request signature
-      let signature = crypto
-        .createHmac( 'sha1', self.options.secretKey )
-        .update( method )
-        .update( '\n' )
-        .update( path )
-        .update( '\n' )
-        .update( ( body ) ? crypto.createHash( 'MD5' ).update( body ).digest( 'base64' ) : '' )
-        .update( '\n' )
-        .update( date.toUTCString() )
-        .digest( 'base64' );
+      let stringToSign = [
+        method,
+        path,
+        ( body ) ? hash( body ) : '',
+        date.toUTCString()
+      ].join( '\n' );
+      let signature = hmac( stringToSign, self.options.secretKey );
 
       let opts = {
         baseUrl: self.options.baseUrl,

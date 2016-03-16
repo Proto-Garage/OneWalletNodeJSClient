@@ -1,24 +1,23 @@
 'use strict';
 
-import _ from 'lodash';
+import crypto from 'crypto';
 
 /**
- * Serializes object
- * @param  {object} obj
+ * Generates hmac given a string and key
+ * @param  {string} message
+ * @param  {string} key
  * @return {string}
  */
-export function serializeObject ( obj ) {
-  if ( obj instanceof Array ) {
-    return _.map( obj, ( item ) => {
-      return serializeObject( item );
-    } ).join( '&' );
-  } else if ( obj instanceof Object ) {
-    let result = [];
-    _( obj ).keys().sortBy().each( ( key ) => {
-      result.push( `${key}=${serializeObject( obj[ key ] )}` );
-    } );
-    return result.join( '&' );
-  } else {
-    return obj.toString();
-  }
+export function hmac ( message, key ) {
+  return crypto.createHmac( 'sha1', key ).update( message ).digest( 'base64' );
+}
+
+/**
+ * Generates hash given a string
+ * @param  {string} message
+ * @param  {string} key
+ * @return {string}
+ */
+export function hash ( message ) {
+  return crypto.createHash( 'sha1' ).update( message ).digest( 'base64' );
 }
