@@ -1,0 +1,4 @@
+machine:
+  timezone: Asia/Manila
+  node:
+    version: v0.12.9
