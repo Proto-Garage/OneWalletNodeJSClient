@@ -21,3 +21,11 @@ export function hmac ( message, key ) {
 export function hash ( message ) {
   return crypto.createHash( 'sha1' ).update( message ).digest( 'base64' );
 }
+
+/**
+ * Generate a UUID
+ * @return {string}
+ */
+export function uuid () {
+  return require( 'node-uuid' ).v1();
+}
