@@ -10,7 +10,7 @@ import _             from 'lodash';
 const logger = debug( 'onewallet-client:request' );
 
 /** Class representing request. */
-export class Request {
+export default class Request {
 
   /**
    * Create a request
