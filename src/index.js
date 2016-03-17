@@ -82,7 +82,7 @@ export default class OneWalletServiceAPI {
         'sessionId',
         'referenceId'
       ] ),
-      maxNumRepeats: 0
+      maxNumRepeats: 2
     } ) ).send();
   }
 
@@ -104,7 +104,7 @@ export default class OneWalletServiceAPI {
         'sessionId',
         'referenceId'
       ] ),
-      maxNumRepeats: 0
+      maxNumRepeats: 2
     } ) ).send();
   }
 
@@ -125,7 +125,7 @@ export default class OneWalletServiceAPI {
         'sessionId',
         'referenceId'
       ] ),
-      maxNumRepeats: 0
+      maxNumRepeats: 2
     } ) ).send();
   }
 }

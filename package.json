@@ -4,6 +4,7 @@
   "description": "NodeJS client implementation for the One Wallet Service API",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm run-script build",
     "build": "babel src --out-dir dist",
     "build-test": "babel test --out-dir test-build",
     "jshint": "jshint src/ test/",
