@@ -1,13 +1,17 @@
 'use strict';
 
-import request       from 'request';
-import debug         from 'debug';
-import Promise       from 'bluebird';
-import { APIError }  from './error';
-import { hash, hmac} from './utilities';
-import _             from 'lodash';
+import request      from 'request';
+import debug        from 'debug';
+import Promise      from 'bluebird';
+import { APIError } from './error';
+import _            from 'lodash';
+import {
+  hash,
+  hmac,
+  Backoff
+} from './utilities';
 
-const logger = debug( 'onewallet-client:request' );
+const logger = debug( 'onewallet:request' );
 
 /** Class representing request. */
 export default class Request {
@@ -17,7 +21,7 @@ export default class Request {
    * @param  {object} options                     Options
    * @param  {string} options.baseUrl             Request base url
    * @param  {string} options.method              Request method
-   * @param  {string} options.path                Url path
+   * @param  {string} options.uri                Url path
    * @param  {object} options.body                Request body
    * @param  {string} options.accessId            Provider access id
    * @param  {string} options.secretKey           Provider secret key
@@ -27,9 +31,9 @@ export default class Request {
    */
   constructor( options ) {
 
-    this.options = _.defaultsDeep( {
+    this.options = _.merge( {
       method: 'GET',
-      path: '/',
+      uri: '/',
       maxNumRepeats: 1,
       backoffInitialDelay: 50,
       timeout: 3000
@@ -38,55 +42,37 @@ export default class Request {
     logger( 'request created', this.options );
   }
 
-  backoff() {
-    let self = this;
-
-    if ( !self.backoff ) {
-      self.backoff = {
-        current: this.options.backoffInitialDelay,
-        next: this.options.backoffInitialDelay,
-        count: 0
-      };
-    }
-
-    return new Promise( function( resolve, reject ) {
-      if ( self.backoff.count >= self.options.maxNumRepeats ) {
-        return reject( new APIError( 'ERR_REQUEST', 'Maximum number of repeats reached' ) );
-      }
-
-      setTimeout( function() {
-        let next = self.backoff.current + self.backoff.next;
-        self.backoff.current = self.backoff.next;
-        self.backoff.next = next;
-        self.backoff.count++;
-        resolve();
-      }, self.backoff.current );
-
-    } );
-  }
-
   /**
    * Send request and retry if communication error is encountered
    * @return {Promise}
    */
   send() {
     let self = this;
-    return new Promise( function( resolve, reject ) {
-      self.sendRequest().then( function( result ) {
-        if ( result instanceof Error ) {
-          return reject( result );
-        }
 
-        resolve( result );
-      } ).catch( function( err ) {
+    let backoff = new Backoff( self.options.backoffInitialDelay );
 
-        logger( 'request error', err );
+    return new Promise( ( resolve, reject ) => {
+      ( function sendRequest() {
+        self.sendRequest().then( result => {
+          if ( result instanceof Error ) {
+            return reject( result );
+          }
 
-        self.backoff().then( function() {
-          self.send();
-        } ).catch( reject );
+          resolve( result );
+        }, err => {
+          logger( 'request error', err );
 
-      } );
+          if ( backoff.count >= self.options.maxNumRepeats ) {
+            err.retries = backoff.count;
+            return reject( err );
+          }
+
+          backoff.backoff().then( () => {
+            sendRequest();
+          } );
+
+        } );
+      } )();
     } );
   }
 
@@ -101,12 +87,12 @@ export default class Request {
       let date = new Date(),
         method = self.options.method.toUpperCase(),
         body = ( method === 'GET' ) ? null : JSON.stringify( self.options.body ),
-        path = self.options.path;
+        uri = self.options.uri;
 
       // Calculate request signature
       let stringToSign = [
         method,
-        path,
+        uri,
         ( body ) ? hash( body ) : '',
         date.toUTCString()
       ].join( '\n' );
@@ -114,10 +100,10 @@ export default class Request {
 
       let opts = {
         baseUrl: self.options.baseUrl,
-        path,
+        uri,
         method: method,
         headers: {
-          Date: date.toUTCString,
+          Date: date.toUTCString(),
           Authorization: `OW ${self.options.accessId}:${signature}`
         },
         timeout: self.options.timeout,
@@ -143,9 +129,9 @@ export default class Request {
         }
 
         logger( 'response received', result, response.statusCode );
-        if ( response.statusCode !== 200 ) {
-          return reject( new APIError(
-            ( result.code ) ? result.code : 'ERR_REQUEST',
+        if ( !_.includes( [ 200, 201 ], response.statusCode ) ) {
+          return resolve( new APIError(
+            ( result.code ) ? result.code : response.statusCode.toString(),
             ( result.message ) ? result.message : result
           ) );
         }
