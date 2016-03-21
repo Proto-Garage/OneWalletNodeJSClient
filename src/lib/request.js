@@ -21,7 +21,7 @@ export default class Request {
    * @param  {object} options                     Options
    * @param  {string} options.baseUrl             Request base url
    * @param  {string} options.method              Request method
-   * @param  {string} options.uri                Url path
+   * @param  {string} options.uri                 Url path
    * @param  {object} options.body                Request body
    * @param  {string} options.accessId            Provider access id
    * @param  {string} options.secretKey           Provider secret key
@@ -107,7 +107,8 @@ export default class Request {
           Authorization: `OW ${self.options.accessId}:${signature}`
         },
         timeout: self.options.timeout,
-        json: false
+        json: false,
+        strictSSL: false
       };
 
       if ( method !== 'GET' && body ) {

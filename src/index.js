@@ -42,7 +42,7 @@ export default class OneWalletServiceAPI {
   authenticateUser( info ) {
     return new Request( this.applyConfig( {
       method: 'POST',
-      path: '/users/authenticate',
+      uri: '/users/authenticate',
       body: info,
       maxNumRepeats: 0
     } ) ).send();
@@ -56,7 +56,7 @@ export default class OneWalletServiceAPI {
   createGameSession( info ) {
     return new Request( this.applyConfig( {
       method: 'POST',
-      path: `/users/${ info.userId }/sessions`,
+      uri: `/users/${ info.userId }/sessions`,
       body: _.omit( info, [
         'userId'
       ] ),
@@ -76,7 +76,7 @@ export default class OneWalletServiceAPI {
     let transactionId = uuid();
     return new Request( this.applyConfig( {
       method: 'POST',
-      path: `/users/${ info.userId }/transactions/${ transactionId }?type=BET&sessionId=${ info.sessionId }`,
+      uri: `/users/${ info.userId }/transactions/${ transactionId }?type=BET&sessionId=${ info.sessionId }`,
       body: _.omit( info, [
         'userId',
         'sessionId',
@@ -98,7 +98,7 @@ export default class OneWalletServiceAPI {
     let transactionId = uuid();
     return new Request( this.applyConfig( {
       method: 'POST',
-      path: `/users/${ info.userId }/transactions/${ transactionId }?type=RESULT&sessionId=${ info.sessionId }`,
+      uri: `/users/${ info.userId }/transactions/${ transactionId }?type=RESULT&sessionId=${ info.sessionId }`,
       body: _.omit( info, [
         'userId',
         'sessionId',
@@ -119,7 +119,7 @@ export default class OneWalletServiceAPI {
     let transactionId = uuid();
     return new Request( this.applyConfig( {
       method: 'POST',
-      path: `/users/${ info.userId }/transactions/${ transactionId }?type=CANCEL&sessionId=${ info.sessionId }`,
+      uri: `/users/${ info.userId }/transactions/${ transactionId }?type=CANCEL&sessionId=${ info.sessionId }`,
       body: _.omit( info, [
         'userId',
         'sessionId',
