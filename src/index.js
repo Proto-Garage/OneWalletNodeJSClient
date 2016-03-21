@@ -16,7 +16,7 @@ export default class OneWalletServiceAPI {
    * @param {number} options.timeout
    */
   constructor( options ) {
-    this.options = _.defaultsDeep( {
+    this.options = _.merge( {
       baseUrl: 'https://api.as2bet.com',
       backoffInitialDelay: 50,
       timeout: 3000
