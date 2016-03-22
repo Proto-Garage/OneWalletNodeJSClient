@@ -72,7 +72,7 @@ export default class OneWalletServiceAPI {
    * @param {array}  info.fields
    */
   getUserInfo( info ) {
-    _.merge( {
+    info = _.merge( {
       fields: [
         'balance',
         'currency',
@@ -84,6 +84,7 @@ export default class OneWalletServiceAPI {
         'email'
       ]
     }, info );
+
     return new Request( this.applyConfig( {
       method: 'GET',
       uri: `/users/${ info.userId }?${ qs.stringify( { fields: info.fields.join( ',' ) } ) }`,
