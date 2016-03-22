@@ -102,7 +102,8 @@ export default class OneWalletServiceAPI {
     let transactionId = uuid();
     return new Request( this.applyConfig( {
       method: 'PUT',
-      uri: `/users/${ info.userId }/transactions/${ transactionId }?type=BET&sessionId=${ info.sessionId }`,
+      uri: `/users/${ info.userId }/transactions/${ transactionId }?` +
+        `${ qs.stringify( { type: 'BET', sessionId: info.sessionId, referenceId: info.referenceId } ) }`,
       body: _.omit( info, [
         'userId',
         'sessionId',
@@ -124,7 +125,8 @@ export default class OneWalletServiceAPI {
     let transactionId = uuid();
     return new Request( this.applyConfig( {
       method: 'PUT',
-      uri: `/users/${ info.userId }/transactions/${ transactionId }?type=RESULT&sessionId=${ info.sessionId }`,
+      uri: `/users/${ info.userId }/transactions/${ transactionId }?` +
+        `${ qs.stringify( { type: 'RESULT', sessionId: info.sessionId, referenceId: info.referenceId } ) }`,
       body: _.omit( info, [
         'userId',
         'sessionId',
@@ -145,7 +147,8 @@ export default class OneWalletServiceAPI {
     let transactionId = uuid();
     return new Request( this.applyConfig( {
       method: 'PUT',
-      uri: `/users/${ info.userId }/transactions/${ transactionId }?type=CANCEL&sessionId=${ info.sessionId }`,
+      uri: `/users/${ info.userId }/transactions/${ transactionId }?` +
+        `${ qs.stringify( { type: 'CANCEL', sessionId: info.sessionId, referenceId: info.referenceId } ) }`,
       body: _.omit( info, [
         'userId',
         'sessionId',
