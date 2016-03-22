@@ -1,8 +1,9 @@
 'use strict';
 
-import _       from 'lodash';
-import Request from './lib/request';
+import _        from 'lodash';
+import Request  from './lib/request';
 import { uuid } from './lib/utilities';
+import qs       from 'querystring';
 
 export default class OneWalletServiceAPI {
 
@@ -68,11 +69,24 @@ export default class OneWalletServiceAPI {
    * Retrieve user info
    * @param {object} info
    * @param {string} info.userId
+   * @param {array}  info.fields
    */
   getUserInfo( info ) {
+    _.merge( {
+      fields: [
+        'balance',
+        'currency',
+        'username',
+        'nickname',
+        'firstName',
+        'lastName',
+        'birthday',
+        'email'
+      ]
+    }, info );
     return new Request( this.applyConfig( {
       method: 'GET',
-      uri: `/users/${ info.userId }`,
+      uri: `/users/${ info.userId }?${ qs.stringify( { fields: info.fields.join( ',' ) } ) }`,
       maxNumRepeats: 0
     } ) ).send();
   }
