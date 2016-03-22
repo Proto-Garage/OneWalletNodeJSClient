@@ -65,6 +65,18 @@ export default class OneWalletServiceAPI {
   }
 
   /**
+   * Retrieve user info
+   * @param {object} info
+   * @param {string} info.userId
+   */
+  getUserInfo( info ) {
+    return new Request( this.applyConfig( {
+      method: 'GET',
+      uri: `/users/${ info.userId }`,
+      maxNumRepeats: 0
+    } ) ).send();
+  }
+  /**
    * Place bet
    * @param {object} info
    * @param {string} info.userId
@@ -75,7 +87,7 @@ export default class OneWalletServiceAPI {
   bet( info ) {
     let transactionId = uuid();
     return new Request( this.applyConfig( {
-      method: 'POST',
+      method: 'PUT',
       uri: `/users/${ info.userId }/transactions/${ transactionId }?type=BET&sessionId=${ info.sessionId }`,
       body: _.omit( info, [
         'userId',
@@ -97,7 +109,7 @@ export default class OneWalletServiceAPI {
   result( info ) {
     let transactionId = uuid();
     return new Request( this.applyConfig( {
-      method: 'POST',
+      method: 'PUT',
       uri: `/users/${ info.userId }/transactions/${ transactionId }?type=RESULT&sessionId=${ info.sessionId }`,
       body: _.omit( info, [
         'userId',
@@ -118,7 +130,7 @@ export default class OneWalletServiceAPI {
   cancel( info ) {
     let transactionId = uuid();
     return new Request( this.applyConfig( {
-      method: 'POST',
+      method: 'PUT',
       uri: `/users/${ info.userId }/transactions/${ transactionId }?type=CANCEL&sessionId=${ info.sessionId }`,
       body: _.omit( info, [
         'userId',
