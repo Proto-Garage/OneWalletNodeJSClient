@@ -13,10 +13,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Proto-Garage/OneWalletNodeJSClient.git"
+    "url": "git+https://github.com/Proto-Garage/onewallet-client-node.git"
   },
   "license": "ISC",
-  "homepage": "https://github.com/Proto-Garage/OneWalletNodeJSClient#readme",
+  "homepage": "https://github.com/Proto-Garage/onewallet-client-node#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "co-mocha": "^1.1.2",
