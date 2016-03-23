@@ -1,5 +1,5 @@
 {
-  "name": "onewallet-client-nodejs",
+  "name": "onewallet-client-node",
   "version": "0.0.1",
   "description": "NodeJS client implementation for the One Wallet Service API",
   "main": "index.js",
