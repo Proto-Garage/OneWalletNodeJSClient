@@ -12,14 +12,23 @@ The client is implemented with the authorization header security and resending o
 ```javascript
 import OneWalletServiceAPI from 'onewallet-client-node';
 
+/* Use the constructor to setup */
 let client = new OneWalletServiceAPI({
     accessId: 'SAMPLE_PROVIDER',
     secretKey: 'X6VYZBFRS8qrqhwg28eQbyEcZmTSrE9G'
 });
+
+/* Or use applyConfig to setup */
+let client = new OneWalletServiceAPI();
+client.applyConfig({
+   accessId: 'SAMPLE_PROVIDER',
+   secretKey: 'X6VYZBFRS8qrqhwg28eQbyEcZmTSrE9G'
+});
+
 ```
 
 To get started, first you must have the `accessId` and the `secretKey` values that will be given by the operator respectively. 
-Call the constructor accordingly and now you can use the **One Wallet Client API**.
+Use the `constructor` or `applyConfig()` accordingly and now you can use the **One Wallet Client API**.
 
 ## One Wallet Client API
 ### constructor ( )
