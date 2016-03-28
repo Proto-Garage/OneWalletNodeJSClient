@@ -155,8 +155,8 @@ This API will make a `BET` transaction for a particular game and starts a transf
     userId: '56',
     sessionId: '0ee89b10-e987-11e5-8b12-e5f8552670cc',
     referenceId: 'c5c6ae90-e986-11e5-8b12-e5f8552670cc',
-    betAmount: 58.0000,
-    ...
+    betAmount: 58.0000
+    // ...
 }
 ```
 
@@ -187,7 +187,7 @@ This API will make a `RESULT` transaction for a particular game after a `BET` tr
     sessionId: '0ee89b10-e987-11e5-8b12-e5f8552670cc',
     referenceId: 'c5c6ae90-e986-11e5-8b12-e5f8552670cc',
     winloss: -58.0000
-    ...
+    // ...
 }
 ```
 
@@ -217,7 +217,7 @@ This API will cancel a `BET` transaction with the same `referenceId`.
     userId: '56',
     sessionId: '0ee89b10-e987-11e5-8b12-e5f8552670cc',
     referenceId: 'c5c6ae90-e986-11e5-8b12-e5f8552670cc',
-    ...
+    // ...
 }
 ```
 
