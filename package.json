@@ -1,6 +1,6 @@
 {
   "name": "onewallet-client-node",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NodeJS client implementation for the One Wallet Service API",
   "main": "index.js",
   "scripts": {
