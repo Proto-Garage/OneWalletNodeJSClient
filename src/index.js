@@ -98,9 +98,10 @@ export default class OneWalletServiceAPI {
    * @param {string} info.sessionId
    * @param {string} info.referenceId
    * @param {string} info.betAmount
+   * @param {string} info.transactionId optional
    */
   bet( info ) {
-    let transactionId = uuid();
+    let transactionId = info.transactionId || uuid();
     return new Request( this.applyConfig( {
       method: 'PUT',
       uri: `/users/${ info.userId }/transactions/${ transactionId }?` +
@@ -121,9 +122,10 @@ export default class OneWalletServiceAPI {
    * @param {string} info.sessionId
    * @param {string} info.referenceId
    * @param {string} info.winloss
+   * @param {string} info.transactionId optional
    */
   result( info ) {
-    let transactionId = uuid();
+    let transactionId = info.transactionId || uuid();
     return new Request( this.applyConfig( {
       method: 'PUT',
       uri: `/users/${ info.userId }/transactions/${ transactionId }?` +
@@ -143,9 +145,10 @@ export default class OneWalletServiceAPI {
    * @param {string} info.userId
    * @param {string} info.sessionId
    * @param {string} info.referenceId
+   * @param {string} info.transactionId optional
    */
   cancel( info ) {
-    let transactionId = uuid();
+    let transactionId = info.transactionId || uuid();
     return new Request( this.applyConfig( {
       method: 'PUT',
       uri: `/users/${ info.userId }/transactions/${ transactionId }?` +
