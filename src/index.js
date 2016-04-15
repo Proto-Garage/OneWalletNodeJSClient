@@ -9,7 +9,8 @@ export default class OneWalletServiceAPI {
 
   /**
    * Constructor
-   * @param {object} options
+   * @access public
+   * @param {Object} options
    * @param {string} options.baseUrl
    * @param {string} options.accessId
    * @param {string} options.secretKey
@@ -24,7 +25,11 @@ export default class OneWalletServiceAPI {
     }, options );
   }
 
-  applyConfig( data ) {
+  /**
+   * Constructor
+   * @access private
+   */
+  _applyConfig( data ) {
     return _.merge( _.pick( this.options, [
       'baseUrl',
       'accessId',
@@ -36,12 +41,13 @@ export default class OneWalletServiceAPI {
 
   /**
    * Check validity of user credentials
-   * @param {object} info
+   * @access public
+   * @param {Object} info
    * @param {string} info.username
    * @param {string} info.password
    */
   authenticateUser( info ) {
-    return new Request( this.applyConfig( {
+    return new Request( this._applyConfig( {
       method: 'POST',
       uri: '/users/authenticate',
       body: info,
@@ -51,11 +57,12 @@ export default class OneWalletServiceAPI {
 
   /**
    * Create game session
-   * @param {object} info
+   * @access public
+   * @param {Object} info
    * @param {string} info.userId
    */
   createGameSession( info ) {
-    return new Request( this.applyConfig( {
+    return new Request( this._applyConfig( {
       method: 'POST',
       uri: `/users/${ info.userId }/sessions`,
       body: _.omit( info, [
@@ -67,12 +74,13 @@ export default class OneWalletServiceAPI {
 
   /**
    * Retrieve user info
-   * @param {object} info
+   * @access public
+   * @param {Object} info
    * @param {string} info.userId
-   * @param {array}  info.fields
+   * @param {string[]}  info.fields
    */
   getUserInfo( info ) {
-    info = _.merge( {
+    info = _.defaults( info, {
       fields: [
         'balance',
         'currency',
@@ -83,9 +91,9 @@ export default class OneWalletServiceAPI {
         'birthday',
         'email'
       ]
-    }, info );
+    } );
 
-    return new Request( this.applyConfig( {
+    return new Request( this._applyConfig( {
       method: 'GET',
       uri: `/users/${ info.userId }?${ qs.stringify( { fields: info.fields.join( ',' ) } ) }`,
       maxNumRepeats: 0
@@ -93,16 +101,17 @@ export default class OneWalletServiceAPI {
   }
   /**
    * Place bet
-   * @param {object} info
+   * @access public
+   * @param {Object} info
    * @param {string} info.userId
    * @param {string} info.sessionId
    * @param {string} info.referenceId
    * @param {string} info.betAmount
-   * @param {string} info.transactionId optional
+   * @param {string} [info.transactionId]
    */
   bet( info ) {
     let transactionId = info.transactionId || uuid();
-    return new Request( this.applyConfig( {
+    return new Request( this._applyConfig( {
       method: 'PUT',
       uri: `/users/${ info.userId }/transactions/${ transactionId }?` +
         `${ qs.stringify( { type: 'BET', sessionId: info.sessionId, referenceId: info.referenceId } ) }`,
@@ -117,16 +126,17 @@ export default class OneWalletServiceAPI {
 
   /**
    * Place bet
-   * @param {object} info
+   * @access public
+   * @param {Object} info
    * @param {string} info.userId
    * @param {string} info.sessionId
    * @param {string} info.referenceId
    * @param {string} info.winloss
-   * @param {string} info.transactionId optional
+   * @param {string} [info.transactionId]
    */
   result( info ) {
     let transactionId = info.transactionId || uuid();
-    return new Request( this.applyConfig( {
+    return new Request( this._applyConfig( {
       method: 'PUT',
       uri: `/users/${ info.userId }/transactions/${ transactionId }?` +
         `${ qs.stringify( { type: 'RESULT', sessionId: info.sessionId, referenceId: info.referenceId } ) }`,
@@ -141,15 +151,16 @@ export default class OneWalletServiceAPI {
 
   /**
    * Place bet
-   * @param {object} info
+   * @access public
+   * @param {Object} info
    * @param {string} info.userId
    * @param {string} info.sessionId
    * @param {string} info.referenceId
-   * @param {string} info.transactionId optional
+   * @param {string} [info.transactionId]
    */
   cancel( info ) {
     let transactionId = info.transactionId || uuid();
-    return new Request( this.applyConfig( {
+    return new Request( this._applyConfig( {
       method: 'PUT',
       uri: `/users/${ info.userId }/transactions/${ transactionId }?` +
         `${ qs.stringify( { type: 'CANCEL', sessionId: info.sessionId, referenceId: info.referenceId } ) }`,
