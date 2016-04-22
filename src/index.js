@@ -99,6 +99,87 @@ export default class OneWalletServiceAPI {
       maxNumRepeats: 0
     } ) ).send();
   }
+
+  /**
+   * Debit amount from account
+   * @access public
+   * @param {Object} info
+   * @param {string} info.userId
+   * @param {string} info.sessionId
+   * @param {string} info.roundId
+   * @param {string} info.amount
+   * @param {string} info.gameType
+   * @param {string} [info.transactionId]
+   */
+  debit( info ) {
+    let transactionId = info.transactionId || uuid();
+    return new Request( this._applyConfig( {
+      method: 'PUT',
+      uri: `/users/${ info.userId }/rounds/${ info.roundId }/transactions/${ transactionId }?` +
+        `${ qs.stringify( { type: 'DEBIT', sessionId: info.sessionId } ) }`,
+      body: _.omit( info, [
+        'userId',
+        'sessionId',
+        'roundId',
+        'transactionId'
+      ] ),
+      maxNumRepeats: 2
+    } ) ).send();
+  }
+
+  /**
+   * Debit amount from account
+   * @access public
+   * @param {Object} info
+   * @param {string} info.userId
+   * @param {string} info.sessionId
+   * @param {string} info.roundId
+   * @param {string} info.debitTransactionId
+   * @param {string} info.gameType
+   * @param {string} [info.transactionId]
+   */
+  cancelDebit( info ) {
+    let transactionId = info.transactionId || uuid();
+    return new Request( this._applyConfig( {
+      method: 'PUT',
+      uri: `/users/${ info.userId }/rounds/${ info.roundId }/transactions/${ transactionId }?` +
+        `${ qs.stringify( { type: 'CANCEL_DEBIT', sessionId: info.sessionId } ) }`,
+      body: _.omit( info, [
+        'userId',
+        'sessionId',
+        'roundId',
+        'transactionId'
+      ] ),
+      maxNumRepeats: 2
+    } ) ).send();
+  }
+
+  /**
+   * Credit amount into account
+   * @access public
+   * @param {Object} info
+   * @param {string} info.userId
+   * @param {string} info.sessionId
+   * @param {string} info.roundId
+   * @param {string} info.amount
+   * @param {string} info.gameType
+   * @param {string} [info.transactionId]
+   */
+  credit( info ) {
+    let transactionId = info.transactionId || uuid();
+    return new Request( this._applyConfig( {
+      method: 'PUT',
+      uri: `/users/${ info.userId }/rounds/${ info.roundId }/transactions/${ transactionId }?` +
+        `${ qs.stringify( { type: 'CREDIT', sessionId: info.sessionId } ) }`,
+      body: _.omit( info, [
+        'userId',
+        'sessionId',
+        'roundId',
+        'transactionId'
+      ] ),
+      maxNumRepeats: 2
+    } ) ).send();
+  }
   /**
    * Place bet
    * @access public
@@ -118,7 +199,8 @@ export default class OneWalletServiceAPI {
       body: _.omit( info, [
         'userId',
         'sessionId',
-        'referenceId'
+        'referenceId',
+        'transactionId'
       ] ),
       maxNumRepeats: 2
     } ) ).send();
@@ -143,7 +225,8 @@ export default class OneWalletServiceAPI {
       body: _.omit( info, [
         'userId',
         'sessionId',
-        'referenceId'
+        'referenceId',
+        'transactionId'
       ] ),
       maxNumRepeats: 2
     } ) ).send();
@@ -167,7 +250,8 @@ export default class OneWalletServiceAPI {
       body: _.omit( info, [
         'userId',
         'sessionId',
-        'referenceId'
+        'referenceId',
+        'transactionId'
       ] ),
       maxNumRepeats: 2
     } ) ).send();
