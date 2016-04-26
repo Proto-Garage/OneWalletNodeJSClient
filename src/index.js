@@ -128,7 +128,7 @@ export default class OneWalletServiceAPI {
   }
 
   /**
-   * Debit amount from account
+   * Cancel debit amount from account
    * @access public
    * @param {Object} info
    * @param {string} info.userId
@@ -151,6 +151,29 @@ export default class OneWalletServiceAPI {
         'transactionId'
       ] ),
       maxNumRepeats: 2
+    } ) ).send();
+  }
+
+  /**
+   * End round amount from account
+   * @access public
+   * @param {Object} info
+   * @param {string} info.userId
+   * @param {string} info.sessionId
+   * @param {string} info.roundId
+   * @param {string} info.gameType
+   */
+  endRound( info ) {
+    return new Request( this._applyConfig( {
+      method: 'PUT',
+      uri: `/users/${ info.userId }/rounds/${ info.roundId }/end` +
+        `${ qs.stringify( { type: 'CANCEL_DEBIT', sessionId: info.sessionId } ) }`,
+      body: _.omit( info, [
+        'userId',
+        'sessionId',
+        'roundId'
+      ] ),
+      maxNumRepeats: 0
     } ) ).send();
   }
 
