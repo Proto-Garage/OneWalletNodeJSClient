@@ -166,7 +166,7 @@ export default class OneWalletServiceAPI {
   endRound( info ) {
     return new Request( this._applyConfig( {
       method: 'POST',
-      uri: `/users/${ info.userId }/rounds/${ info.roundId }/end` +
+      uri: `/users/${ info.userId }/rounds/${ info.roundId }/end?` +
         `${ qs.stringify( { sessionId: info.sessionId } ) }`,
       body: _.omit( info, [
         'userId',
