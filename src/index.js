@@ -84,6 +84,7 @@ export default class OneWalletServiceAPI {
       fields: [
         'balance',
         'currency',
+        'country',
         'username',
         'nickname',
         'firstName',
