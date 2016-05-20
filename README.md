@@ -1,50 +1,26 @@
 # One Wallet Client (NodeJS)
 
-The client will be used for making requests with the One Wallet Service.
-
-```http
-Authorization: OW {providerAccessId}:{requestSignature}
-```
-The client is implemented with the authorization header security and resending of requests for convenience.
+The `One Wallet Client` will be used for making requests into the `One Wallet Service API`.
 
 ## Getting Started
 
 ```javascript
+/* Example usage */
 import OneWalletServiceAPI from 'onewallet-client-node';
 
 /* Use the constructor to setup */
-let client = new OneWalletServiceAPI({
+let client = new OneWalletServiceAPI( {
     accessId: 'SAMPLE_PROVIDER',
     secretKey: 'X6VYZBFRS8qrqhwg28eQbyEcZmTSrE9G'
-});
-
-/* Or use applyConfig to setup */
-let client = new OneWalletServiceAPI();
-client.applyConfig({
-   accessId: 'SAMPLE_PROVIDER',
-   secretKey: 'X6VYZBFRS8qrqhwg28eQbyEcZmTSrE9G'
-});
-
+} );
 ```
-
-To get started, first you must have the `accessId` and the `secretKey` values that will be given by the operator respectively. 
-Use the `constructor` or `applyConfig()` accordingly and now you can use the **One Wallet Client API**.
+The `accessId` and the `secretKey` will be provided by the operator.
 
 ## One Wallet Client API
-### constructor ( )
+### `constructor ( )`
 
-The OneWalletServiceAPI constructor accepts object input and can be adjusted using the options specified below.
+The OneWalletServiceAPI constructor accepts an object with the following properties:
 
-#### Input (Options)
-```javascript
-{
-    baseUrl: 'https://api.as2bet.com',
-    accessId: '',
-    secretKey: '',
-    backoffInitialDelay: 50,
-    timeout: 3000
-}
-```
 
 | Field | Required | Type | Description | Default |
 |---|---|---|---|---|
@@ -54,9 +30,20 @@ The OneWalletServiceAPI constructor accepts object input and can be adjusted usi
 | backoffInitialDelay | false | Number | Delay for request retry | 50 |
 | timeout | false | Number | request timeout | 3000 |
 
-### authenticateUser ( )
+#### Input (Options)
+```javascript
+{
+    baseUrl: 'https://api.as2bet.com',
+    accessId: 'SAMPLE_PROVIDER',
+    secretKey: 'X6VYZBFRS8qrqhwg28eQbyEcZmTSrE9G',
+    backoffInitialDelay: 50,
+    timeout: 3000
+}
+```
 
-This API will check the user's credentials and returns the user's information.
+### `authenticateUser ( )`
+
+This method will check the user's credentials and returns the user's information.
 
 #### Input
 ```javascript
@@ -69,7 +56,7 @@ This API will check the user's credentials and returns the user's information.
 | Field | Required | Type | Description | Default |
 |---|---|---|---|---|
 | username | true | String | User's username | |
-| password | true | String | User's password | | 
+| password | true | String | User's password | |
 
 #### Return Value
 ```javascript
@@ -85,10 +72,10 @@ This API will check the user's credentials and returns the user's information.
 }
 ```
 
-### createGameSession ( )
+### `createGameSession ( )`
 
-This API creates a player game session. A player can have only one active session.
-This will accept `userId` as input and returns a `sessionId`.
+This method creates a player game session.
+This method accepts a `userId` as input and returns a `sessionId`.
 
 #### Input
 ```javascript
@@ -108,7 +95,7 @@ This will accept `userId` as input and returns a `sessionId`.
 }
 ```
 
-### getUserInfo ( )
+### `getUserInfo ( )`
 
 This API retrieves the player's information give it's id and the fields you want to retrieve.
 
@@ -138,24 +125,20 @@ This API retrieves the player's information give it's id and the fields you want
 }
 ```
 
-### Transfer Transaction
+### Transfer Transactions
 
-The **One Wallet Service** has its own flow of transfer mechanism. A normal transaction mechanism would consists of a `BET` and 
-`RESULT` requests, it always starts with the `BET` transaction and ends with either `RESULT` OR `CANCEL` transactions. 
-Transfer transactions are **idempotent**. Every transfer transaction flow has a unique `referenceId`, every transaction 
-has a unique `transactionId`, and every transaction returns the user's current balance.
+### `debit ( )`
 
-### bet ( )
+This method creates a `DEBIT` transaction for a specified game type.
 
-This API will make a `BET` transaction for a particular game and starts a transfer transaction flow with a `referenceId`.
- 
 #### Input
 ```javascript
 {
     userId: '56',
     sessionId: '0ee89b10-e987-11e5-8b12-e5f8552670cc',
-    referenceId: 'c5c6ae90-e986-11e5-8b12-e5f8552670cc',
-    betAmount: 58.0000,
+    roundId: '43524335',
+    amount: 58,
+    gameType: 'Six Card Chinese',
     ...
 }
 ```
@@ -164,8 +147,9 @@ This API will make a `BET` transaction for a particular game and starts a transf
 |---|---|---|---|---|
 | userId | true | String | User's id | |
 | sessionId | true | String | Game session ID. Generate using the `createGameSession ( )` API | |
-| referenceId | true | String | Game reference [UUID](https://tools.ietf.org/html/rfc4122). | |
-| betAmount | true | Number | Bet transaction value | |
+| roundId | true | String | Round Id | |
+| amount | true | Number | Debit transaction amount | |
+| gameType | true | String | Game type | |
 | ... | false | | Provider specific key-value inputs (you can add it here). | |
 
 #### Return Value
@@ -176,17 +160,18 @@ This API will make a `BET` transaction for a particular game and starts a transf
 }
 ```
 
-### result ( )
+### `credit ( )`
 
-This API will make a `RESULT` transaction for a particular game after a `BET` transaction with the same `referenceId`.
+This method creates a `CREDIT` transaction for a specified game type.
 
 #### Input
 ```javascript
 {
     userId: '56',
     sessionId: '0ee89b10-e987-11e5-8b12-e5f8552670cc',
-    referenceId: 'c5c6ae90-e986-11e5-8b12-e5f8552670cc',
-    winloss: -58.0000,
+    roundId: '43524335',
+    amount: 58,
+    gameType: 'Six Card Chinese',
     ...
 }
 ```
@@ -195,28 +180,30 @@ This API will make a `RESULT` transaction for a particular game after a `BET` tr
 |---|---|---|---|---|
 | userId | true | String | User's id | |
 | sessionId | true | String | Game session ID. Generate using the `createGameSession ( )` API | |
-| referenceId | true | String | Game reference [UUID](https://tools.ietf.org/html/rfc4122). | |
-| winloss | true | Number | Win or lose amount. User cannot lose more than the betAmount. | |
+| roundId | true | String | Round Id | |
+| amount | true | Number | Debit transaction amount | |
+| gameType | true | String | Game type | |
 | ... | false | | Provider specific key-value inputs (you can add it here). | |
 
 #### Return Value
 ```javascript
 {
-    balance: 249942.0000
+    balance: 249942
     currency: 'USD'
 }
 ```
 
-### cancel ( )
+### `cancelDebit ( )`
 
-This API will cancel a `BET` transaction with the same `referenceId`.
+This method will cancel a `DEBIT` transaction with the specified `transactionId`.
 
 #### Input
 ```javascript
 {
     userId: '56',
     sessionId: '0ee89b10-e987-11e5-8b12-e5f8552670cc',
-    referenceId: 'c5c6ae90-e986-11e5-8b12-e5f8552670cc',
+    debitTransactionId: 'c5c6ae90-e986-11e5-8b12-e5f8552670cc',
+    gameType: 'Six Card Chinese',
     ...
 }
 ```
@@ -225,14 +212,15 @@ This API will cancel a `BET` transaction with the same `referenceId`.
 |---|---|---|---|---|
 | userId | true | String | User's id | |
 | sessionId | true | String | Game session ID. Generate using the `createGameSession ( )` API | |
-| referenceId | true | String | Game reference [UUID](https://tools.ietf.org/html/rfc4122). | |
+| debitTransactionId | true | String | Debit transaction ID [UUID](https://tools.ietf.org/html/rfc4122). | |
+| gameType | true | String | Game type | |
 | ... | false | | Provider specific key-value inputs (you can add it here). | |
 
 
 #### Result Value
 ```javascript
 {
-    balance: 249942.0000
+    balance: 249942
     currency: 'USD'
 }
 ```
