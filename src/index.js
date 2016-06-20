@@ -116,7 +116,9 @@ export default class OneWalletServiceAPI {
     let transactionId = info.transactionId || uuid();
     return new Request( this._applyConfig( {
       method: 'PUT',
-      uri: `/users/${ info.userId }/rounds/${ info.roundId }/transactions/${ transactionId }?` +
+      uri: `/users/${ info.userId }` +
+        ( info.roundId ? `/rounds/${ info.roundId }` : ''  ) +
+        `/transactions/${ transactionId }?` +
         `${ qs.stringify( { type: 'DEBIT', sessionId: info.sessionId } ) }`,
       body: _.omit( info, [
         'userId',
@@ -124,7 +126,7 @@ export default class OneWalletServiceAPI {
         'roundId',
         'transactionId'
       ] ),
-      maxNumRepeats: 2
+      maxNumRepeats: 5
     } ) ).send();
   }
 
@@ -143,7 +145,9 @@ export default class OneWalletServiceAPI {
     let transactionId = info.transactionId || uuid();
     return new Request( this._applyConfig( {
       method: 'PUT',
-      uri: `/users/${ info.userId }/rounds/${ info.roundId }/transactions/${ transactionId }?` +
+      uri: `/users/${ info.userId }` +
+         ( info.roundId ? `/rounds/${ info.roundId }` : ''  ) +
+        `/transactions/${ transactionId }?` +
         `${ qs.stringify( { type: 'CANCEL_DEBIT', sessionId: info.sessionId } ) }`,
       body: _.omit( info, [
         'userId',
@@ -151,7 +155,7 @@ export default class OneWalletServiceAPI {
         'roundId',
         'transactionId'
       ] ),
-      maxNumRepeats: 2
+      maxNumRepeats: 5
     } ) ).send();
   }
 
@@ -193,7 +197,9 @@ export default class OneWalletServiceAPI {
     let transactionId = info.transactionId || uuid();
     return new Request( this._applyConfig( {
       method: 'PUT',
-      uri: `/users/${ info.userId }/rounds/${ info.roundId }/transactions/${ transactionId }?` +
+      uri: `/users/${ info.userId }` +
+         ( info.roundId ? `/rounds/${ info.roundId }` : ''  ) +
+        `/transactions/${ transactionId }?` +
         `${ qs.stringify( { type: 'CREDIT', sessionId: info.sessionId } ) }`,
       body: _.omit( info, [
         'userId',
@@ -201,7 +207,7 @@ export default class OneWalletServiceAPI {
         'roundId',
         'transactionId'
       ] ),
-      maxNumRepeats: 2
+      maxNumRepeats: 5
     } ) ).send();
   }
   /**
