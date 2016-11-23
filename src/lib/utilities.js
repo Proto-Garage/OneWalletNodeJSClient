@@ -28,7 +28,7 @@ export function hash ( message ) {
  * @return {string}
  */
 export function uuid () {
-  return require( 'node-uuid' ).v1();
+  return require( 'uuid' ).v1();
 }
 
 export class Backoff {
